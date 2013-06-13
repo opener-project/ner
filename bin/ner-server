@@ -1,3 +1,11 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/opener/ner'
+require_relative '../lib/opener/ner/server'
+
+# Without calling `Rack::Server#options` manually the CLI arguments will never
+# be passed, thus the application can't be specified as a constructor argument.
+server                  = Rack::Server.new
+server.options[:config] = File.expand_path('../../config.ru', __FILE__)
+
+server.start

@@ -79,7 +79,8 @@ module Opener
     # @return [String]
     #
     def language
-      return option_parser.options[:language]
+      # TODO: Fix this by extracting the CLI code into a separate class.
+      return options[:language] || option_parser.options[:language]
     end
 
     ##
