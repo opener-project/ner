@@ -1,3 +1,7 @@
 #!/usr/bin/env ruby
 
 require_relative '../lib/opener/ner'
+
+kernel = Opener::Ner.new(:args => ARGV)
+
+kernel.run!(STDIN.tty? ? nil : STDIN.read)

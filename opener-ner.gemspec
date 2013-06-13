@@ -14,7 +14,7 @@ Gem::Specification.new do |gem|
   gem.executables = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
   gem.test_files  = gem.files.grep(%r{^(test|spec|features)/})
 
-  gem.add_dependency 'sinatra'
+  gem.add_dependency 'sinatra', '~> 1.4'
   gem.add_dependency 'httpclient'
 
   gem.add_development_dependency 'rake'
