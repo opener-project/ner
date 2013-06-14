@@ -3,85 +3,67 @@ require 'opener/ners/base'
 require 'opener/ners/fr'
 
 require_relative 'ner/version'
-require_relative 'ner/option_parser'
+require_relative 'ner/cli'
 
 module Opener
   ##
-  # Primary NER class that acts as a CLI wrapper around the various NER
-  # kernels.
+  # Primary NER class that takes care of delegating NER actions to the language
+  # specific kernels.
   #
-  # @!attribute [r] args
-  #  @return [Array]
   # @!attribute [r] options
   #  @return [Hash]
-  # @!attribute [r] option_parser
-  #  @return [Opener::Ner::OptionParser]
   #
   class Ner
-    attr_reader :args, :options, :option_parser
+    attr_reader :options
+
+    ##
+    # The default language to use when no custom one is specified.
+    #
+    # @return [String]
+    #
+    DEFAULT_LANGUAGE = 'en'.freeze
+
+    ##
+    # Hash containing the default options to use.
+    #
+    # @return [Hash]
+    #
+    DEFAULT_OPTIONS = {
+      :args     => [],
+      :language => DEFAULT_LANGUAGE
+    }.freeze
 
     ##
     # @param [Hash] options
     #
-    # @option options [Array] :args An array containing arguments to pass to
-    #  the NER kernel.
+    # @option options [Array] :args Collection of arbitrary arguments to pass
+    #  to the underlying kernels.
+    # @option options [String] :language The language to use.
     #
     def initialize(options = {})
-      @args          = options.delete(:args) || []
-      @options       = options
-      @option_parser = OptionParser.new
+      @options = DEFAULT_OPTIONS.merge(options)
     end
 
     ##
-    # Tags the input and returns an Array containing the output of STDOUT,
-    # STDERR and an object containing information about the executed process.
+    # Processes the input and returns an array containing the output of STDOUT,
+    # STDERR and an object containing process information.
     #
     # @param [String] input
     # @return [Array]
     #
     def run(input)
-      option_parser.parse(args)
-
-      if !input or input.empty?
-        option_parser.show_help
-      end
+      args = options[:args].dup
 
       if language_constant_defined?
-        kernel = language_constant.new(:args => args.dup)
+        kernel = language_constant.new(:args => args)
       else
-        kernel = Ners::Base.new(:args => args.dup, :language => language)
+        kernel = Ners::Base.new(:args => args, :language => options[:language])
       end
 
       return kernel.run(input)
     end
 
-    ##
-    # Convenience method for tagging the input and easily handling potential
-    # errors.
-    #
-    # @see #run
-    #
-    def run!(input)
-      stdout, stderr, process = run(input)
-
-      if process.success?
-        puts stdout
-
-        STDERR.puts(stderr) unless stderr.empty?
-      else
-        abort stderr
-      end
-    end
-
     protected
-
-    ##
-    # @return [String]
-    #
-    def language
-      # TODO: Fix this by extracting the CLI code into a separate class.
-      return options[:language] || option_parser.options[:language]
-    end
 
     ##
     # Returns `true` if the current language has a dedicated kernel class.
@@ -96,7 +78,7 @@ module Opener
     # @return [String]
     #
     def language_constant_name
-      return language.upcase
+      return options[:language].upcase
     end
 
     ##
