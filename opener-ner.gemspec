@@ -16,6 +16,8 @@ Gem::Specification.new do |gem|
 
   gem.add_dependency 'sinatra', '~> 1.4'
   gem.add_dependency 'httpclient'
+  gem.add_dependency 'opener-ner-base'
+  gem.add_dependency 'opener-ner-fr'
 
   gem.add_development_dependency 'rake'
 end
