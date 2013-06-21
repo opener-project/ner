@@ -1,6 +1,7 @@
 require 'optparse'
 require 'opener/ners/base'
 require 'opener/ners/fr'
+require 'nokogiri'
 
 require_relative 'ner/version'
 require_relative 'ner/cli'
@@ -52,12 +53,13 @@ module Opener
     # @return [Array]
     #
     def run(input)
+      language = language_from_kaf(input)
       args = options[:args].dup
 
-      if language_constant_defined?
-        kernel = language_constant.new(:args => args)
+      if language_constant_defined?(language)
+        kernel = language.new(:args => args)
       else
-        kernel = Ners::Base.new(:args => args, :language => options[:language])
+        kernel = Ners::Base.new(:args => args, :language => language)
       end
 
       return kernel.run(input)
@@ -70,15 +72,8 @@ module Opener
     #
     # @return [TrueClass|FalseClass]
     #
-    def language_constant_defined?
-      return Ners.const_defined?(language_constant_name)
-    end
-
-    ##
-    # @return [String]
-    #
-    def language_constant_name
-      return options[:language].upcase
+    def language_constant_defined?(language)
+      return Ners.const_defined?(language.upcase)
     end
 
     ##
@@ -86,6 +81,12 @@ module Opener
     #
     def language_constant
       return Ners.const_get(language_constant_name)
+    end
+    
+    def language_from_kaf(input)
+      reader = Nokogiri::XML::Reader(input)
+
+      return reader.read.lang
     end
   end # Ner
 end # Opener

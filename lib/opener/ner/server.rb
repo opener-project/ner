@@ -44,12 +44,15 @@ module Opener
           halt(400, 'No KAF specified')
         end
 
-        if params[:callbacks] and !params[:callbacks].strip.empty?
-          process_async
-        else
+        callbacks = extract_callbacks(params[:callbacks])
+        
+        if callbacks.empty?
           process_sync
+        else
+          process_async(callbacks)
         end
       end
+
 
       ##
       # Processes the request synchronously.
@@ -69,10 +72,9 @@ module Opener
       ##
       # Processes the request asynchronously.
       #
-      def process_async
-        callbacks = params[:callbacks]
-        callbacks = [callbacks] unless callbacks.is_a?(Array)
-
+      # @param [Array] callbacks The callback URLs to use.
+      #
+      def process_async(callbacks)
         Thread.new do
           calculate_ner_async(params[:text], callbacks, params[:error_callback])
         end
@@ -88,8 +90,8 @@ module Opener
       # @return [String]
       # @raise RunetimeError Raised when the tagging process failed.
       #
-      def calculate_ner(text, language)
-        tagger                = Ner.new(:language => language)
+      def calculate_ner(text)
+        tagger                = Ner.new
         output, error, status = tagger.run(text)
 
         raise(error) unless status.success?
@@ -108,7 +110,7 @@ module Opener
         begin
           output = calculate_ner(text)
         rescue => error
-          logger.error("Failed to tag the polarity: #{error.inspect}")
+          logger.error("Failed to calculate ner: #{error.inspect}")
 
           submit_error(error_callback, error.message) if error_callback
         end
@@ -134,7 +136,7 @@ module Opener
       def process_callback(url, text, callbacks)
         HTTPClient.post(
           url,
-          :body => {:text => text, :callbacks => callbacks, :kaf => true}
+          :body => {:text => text, :'callbacks[]' => callbacks, :kaf => true}
         )
       end
 
@@ -144,6 +146,18 @@ module Opener
       #
       def submit_error(url, message)
         HTTPClient.post(url, :body => {:error => message})
+      end
+      
+      ##
+      # Returns an Array containing the callback URLs, ignoring empty values.
+      #
+      # @param [Array|String] input
+      # @return [Array]
+      #
+      def extract_callbacks(input)
+        callbacks = input.compact.reject(&:empty?)
+
+        return callbacks
       end
     end # Server
   end # Ner
