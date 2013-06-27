@@ -2,7 +2,7 @@ require File.expand_path('../lib/opener/ner/version', __FILE__)
 
 Gem::Specification.new do |gem|
   gem.name        = 'opener-ner'
-  gem.version     = Opener::NER::VERSION
+  gem.version     = Opener::Ner::VERSION
   gem.authors     = ['development@olery.com']
   gem.summary     = 'Primary NER component that wraps the various NER kernels.'
   gem.description = gem.summary
