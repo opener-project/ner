@@ -30,7 +30,6 @@ module Opener
       # @param [Hash] params The POST parameters.
       #
       # @option params [String] :text The KAF to process.
-      # @option params [String] :language The language to use.
       # @option params [Array<String>] :callbacks A collection of callback URLs
       #  that act as a chain. The results are posted to the first URL which is
       #  then shifted of the list.
@@ -45,7 +44,7 @@ module Opener
         end
 
         callbacks = extract_callbacks(params[:callbacks])
-        
+
         if callbacks.empty?
           process_sync
         else
@@ -58,15 +57,15 @@ module Opener
       # Processes the request synchronously.
       #
       def process_sync
-        output = calculate_ner(params[:text], params[:language])
+        output = calculate_ner(params[:text])
 
         content_type(:xml)
 
         body(output)
-      rescue => error
-        logger.error("Failed to tag the text: #{error.inspect}")
+      #rescue => error
+        #logger.error("Failed to tag the text: #{error.inspect}")
 
-        halt(500, error.message)
+        #halt(500, error.message)
       end
 
       ##
@@ -86,7 +85,6 @@ module Opener
       # Gets the NER of a KAF document.
       #
       # @param [String] text The KAF to tokenize.
-      # @param [String] language The language of the KAF document.
       # @return [String]
       # @raise RunetimeError Raised when the tagging process failed.
       #
@@ -147,7 +145,7 @@ module Opener
       def submit_error(url, message)
         HTTPClient.post(url, :body => {:error => message})
       end
-      
+
       ##
       # Returns an Array containing the callback URLs, ignoring empty values.
       #
@@ -155,6 +153,7 @@ module Opener
       # @return [Array]
       #
       def extract_callbacks(input)
+        return [] if input.nil? || input.empty?
         callbacks = input.compact.reject(&:empty?)
 
         return callbacks

@@ -1,5 +1,5 @@
 module Opener
   module NER
-    VERSION = '0.1.0'
+    VERSION = '0.1.2'
   end # NER
 end # Opener
