@@ -55,9 +55,9 @@ module Opener
     def run(input)
       language = language_from_kaf(input)
       args = options[:args].dup
-
+      
       if language_constant_defined?(language)
-        kernel = language.new(:args => args)
+        kernel = language_constant(language).new(:args => args)
       else
         kernel = Ners::Base.new(:args => args, :language => language)
       end
@@ -79,8 +79,8 @@ module Opener
     ##
     # @return [Class]
     #
-    def language_constant
-      return Ners.const_get(language_constant_name)
+    def language_constant(language)
+      return Ners.const_get(language.upcase)
     end
     
     def language_from_kaf(input)
