@@ -54,8 +54,8 @@ module Opener
     #
     def run(input)
       language = language_from_kaf(input)
-      args = options[:args].dup
-      
+      args     = options[:args].dup
+
       if language_constant_defined?(language)
         kernel = language_constant(language).new(:args => args)
       else
@@ -73,7 +73,7 @@ module Opener
     # @return [TrueClass|FalseClass]
     #
     def language_constant_defined?(language)
-      return Ners.const_defined?(language.upcase)
+      return language && Ners.const_defined?(language.upcase)
     end
 
     ##
@@ -82,7 +82,11 @@ module Opener
     def language_constant(language)
       return Ners.const_get(language.upcase)
     end
-    
+
+    ##
+    # @param [String] input
+    # @return [String]
+    #
     def language_from_kaf(input)
       reader = Nokogiri::XML::Reader(input)
 
