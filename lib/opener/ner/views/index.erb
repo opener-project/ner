@@ -23,13 +23,14 @@
 
                 <textarea id="input" name="input" cols="50" rows="10"></textarea>
             </div>
-
+            <% 10.times do |t| %>
             <div>
-                <label for="callbacks">Callback URL (**)</label>
-                <br />
+              <label for="callbacks">Callback URL <%=t+1%>(**)</label>
+              <br />
 
-                <input id="callbacks" type="text" name="callbacks" />
+              <input id="callbacks" type="text" name="callbacks[]" />
             </div>
+            <% end %>
 
             <div>
                 <label for="error_callback">Error Callback</label>
