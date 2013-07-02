@@ -53,7 +53,7 @@ module Opener
     # @return [Array]
     #
     def run(input)
-      language = language_from_kaf(input)
+      language = language_from_kaf(input) || DEFAULT_LANGUAGE
       args     = options[:args].dup
 
       if language_constant_defined?(language)
