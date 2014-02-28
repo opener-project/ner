@@ -45,6 +45,8 @@ Examples:
 
 Languages:
 
+  Ner will try to detect the language of the KAF file if no language is given.
+
   * Dutch (nl)
   * English (en)
   * French (fr)
@@ -61,17 +63,9 @@ Languages:
       def run(input)
         option_parser.parse!(options[:args])
 
-        tokenizer = Ner.new(options)
+        ner = Ner.new(options)
 
-        stdout, stderr, process = tokenizer.run(input)
-
-        if process.success?
-          puts stdout
-
-          STDERR.puts(stderr) unless stderr.empty?
-        else
-          abort stderr
-        end
+        return ner.run(input)
       end
 
       private
