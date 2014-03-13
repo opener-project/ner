@@ -18,7 +18,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'httpclient'
   gem.add_dependency 'nokogiri'
   gem.add_dependency 'opener-ner-base'
-  gem.add_dependency 'opener-ner-fr'
   gem.add_dependency 'opener-webservice'
 
   gem.add_development_dependency 'rake'
