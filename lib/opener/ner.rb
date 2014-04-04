@@ -1,6 +1,5 @@
 require 'optparse'
 require 'opener/ners/base'
-require 'opener/ners/fr'
 require 'nokogiri'
 
 require_relative 'ner/version'
