@@ -8,7 +8,8 @@
 cat some_kaf_file.kaf | ner
 ```
 
-Excerpt of KAF file:
+Excerpt of KAF file
+
 ```
 <entity eid="e2" type="person">
   <references>
@@ -32,7 +33,7 @@ ner-server
 After launching the server, you can reach the webservice at
 <http://localhost:9292>.
 
-The webservice takes several options that get passed along to (Puma)[http://puma.io], the
+The webservice takes several options that get passed along to [Puma](http://puma.io), the
 webserver used by the component. The options are:
 
 ```
