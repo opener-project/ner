@@ -4,6 +4,7 @@ require 'nokogiri'
 
 require_relative 'ner/version'
 require_relative 'ner/cli'
+require_relative 'ner/error_layer'
 
 module Opener
   ##
@@ -52,16 +53,20 @@ module Opener
     # @return [Array]
     #
     def run(input)
-      language = language_from_kaf(input) || DEFAULT_LANGUAGE
-      args     = options[:args].dup
+      begin
+        language = language_from_kaf(input) || DEFAULT_LANGUAGE
+        args     = options[:args].dup
 
-      if language_constant_defined?(language)
-        kernel = language_constant(language).new(:args => args)
-      else
-        kernel = Ners::Base.new(:args => args, :language => language)
+        if language_constant_defined?(language)
+          kernel = language_constant(language).new(:args => args)
+        else
+          kernel = Ners::Base.new(:args => args, :language => language)
+        end
+
+        return kernel.run(input)
+      rescue Exception => error
+        return ErrorLayer.new(input, error.message, self.class).add
       end
-
-      return kernel.run(input)
     end
 
     protected
