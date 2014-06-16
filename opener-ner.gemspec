@@ -25,7 +25,6 @@ Gem::Specification.new do |gem|
   gem.add_dependency 'nokogiri'
   gem.add_dependency 'puma'
   gem.add_dependency 'opener-daemons'
-  gem.add_dependency 'opener-core', ['>= 0.1.2']
   gem.add_dependency 'opener-ner-base'
   gem.add_dependency 'opener-webservice'
 
