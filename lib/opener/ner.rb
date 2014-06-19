@@ -4,7 +4,6 @@ require 'nokogiri'
 
 require_relative 'ner/version'
 require_relative 'ner/cli'
-require_relative 'ner/error_layer'
 
 module Opener
   ##
@@ -65,7 +64,7 @@ module Opener
 
         return kernel.run(input)
       rescue Exception => error
-        return ErrorLayer.new(input, error.message, self.class).add
+        return Opener::Core::ErrorLayer.new(input, error.message, self.class).add
       end
     end
 
