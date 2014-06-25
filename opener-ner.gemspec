@@ -7,6 +7,7 @@ Gem::Specification.new do |gem|
   gem.summary     = 'Primary NER component that wraps the various NER kernels.'
   gem.description = gem.summary
   gem.has_rdoc    = 'yard'
+  gem.license     = 'Apache 2.0'
 
   gem.required_ruby_version = '>= 1.9.2'
 
@@ -15,6 +16,7 @@ Gem::Specification.new do |gem|
     'config.ru',
     '*.gemspec',
     'README.md',
+    'LICENSE.txt',
     'exec/**/*'
   ]).select { |file| File.file?(file) }
 
