@@ -58,9 +58,9 @@ module Opener
         args     = options[:args].dup
 
         if language_constant_defined?(language)
-          kernel = language_constant(language).new(:args => args)
+          kernel = language_constant(language).new(options)
         else
-          kernel = Ners::Base.new(:args => args, :language => language)
+          kernel = Ners::Base.new(options)
         end
 
         return kernel.run(input)
