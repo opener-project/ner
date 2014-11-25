@@ -60,5 +60,5 @@ Example:
         end
       end
     end # CLI
-  end # ConstituentParser
+  end # Ner
 end # Opener
