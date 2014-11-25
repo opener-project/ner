@@ -2,9 +2,9 @@
 
 require 'opener/daemons'
 
-exec_path = File.expand_path('../../exec/ner.rb', __FILE__)
-
-Opener::Daemons::Controller.new(
-  :name      => 'ner',
-  :exec_path => exec_path
+controller = Opener::Daemons::Controller.new(
+  :name      => 'opener-ner',
+  :exec_path => File.expand_path('../../exec/ner.rb', __FILE__)
 )
+
+controller.run

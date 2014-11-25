@@ -1,88 +1,64 @@
 module Opener
   class Ner
     ##
-    # CLI wrapper around {Opener::Ner} using OptionParser.
+    # CLI wrapper around {Opener::Ner} using Slop.
     #
-    # @!attribute [r] options
-    #  @return [Hash]
-    # @!attribute [r] option_parser
-    #  @return [OptionParser]
+    # @!attribute [r] parser
+    #  @return [Slop]
     #
     class CLI
-      attr_reader :options, :option_parser
+      attr_reader :parser
+
+      def initialize
+        @parser = configure_slop
+      end
 
       ##
-      # @param [Hash] options
+      # @param [Array] argv
       #
-      def initialize(options = {})
-        @options = DEFAULT_OPTIONS.merge(options)
+      def run(argv = ARGV)
+        parser.parse(argv)
+      end
 
-        @option_parser = OptionParser.new do |opts|
-          opts.program_name   = 'ner'
-          opts.summary_indent = '  '
+      ##
+      # @return [Slop]
+      #
+      def configure_slop
+        return Slop.new(:strict => false, :indent => 2, :help => true) do
+          banner 'Usage: ner [OPTIONS]'
 
-          opts.on('-h', '--help', 'Shows this help message') do
-            show_help
-          end
+          separator <<-EOF.chomp
 
-          opts.on('-v', '--version', 'Shows the current version') do
-            show_version
-          end
+About:
 
-          opts.on(
-            '-l',
-            '--language [VALUE]',
-            'Uses this specific language'
-          ) do |value|
-            @options[:language] = value
-          end
+    Named Entity Recognition for various languages such as English and Dutch.
+    This command reads input from STDIN.
 
-          opts.separator <<-EOF
+Example:
 
-Examples:
-
-  cat example.kaf | #{opts.program_name} -l en
-
-Languages:
-
-  Ner will try to detect the language of the KAF file if no language is given.
-
-  * Dutch (nl)
-  * English (en)
-  * French (fr)
-  * German (de)
-  * Italian (it)
-  * Spanish (es)
+    cat some_file.kaf | ner
           EOF
+
+          separator "\nOptions:\n"
+
+          on :v, :version, 'Shows the current version' do
+            abort "ner v#{VERSION} on #{RUBY_DESCRIPTION}"
+          end
+
+          on :l=, :language=, 'Sets a specific language to use', :as => String
+
+          run do |opts, args|
+            parser = Ner.new(
+              :args     => args,
+              :language => opts[:language]
+            )
+
+            input = STDIN.tty? ? nil : STDIN.read
+
+            puts parser.run(input)
+          end
         end
       end
-
-      ##
-      # @param [String] input
-      #
-      def run(input)
-        option_parser.parse!(options[:args])
-
-        ner = Ner.new(options)
-
-        return ner.run(input)
-      end
-
-      private
-
-      ##
-      # Shows the help message and exits the program.
-      #
-      def show_help
-        abort option_parser.to_s
-      end
-
-      ##
-      # Shows the version and exits the program.
-      #
-      def show_version
-        abort "#{option_parser.program_name} v#{VERSION} on #{RUBY_DESCRIPTION}"
-      end
     end # CLI
-  end # Ner
+  end # ConstituentParser
 end # Opener

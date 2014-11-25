@@ -22,14 +22,12 @@ Gem::Specification.new do |gem|
 
   gem.executables = Dir.glob('bin/*').map { |file| File.basename(file) }
 
-  gem.add_dependency 'sinatra', '~> 1.4'
-  gem.add_dependency 'httpclient'
-  gem.add_dependency 'nokogiri'
-  gem.add_dependency 'puma'
-  gem.add_dependency 'opener-daemons'
   gem.add_dependency 'opener-ner-base', ['~> 3.0']
-  gem.add_dependency 'opener-webservice'
-  gem.add_dependency 'opener-core', '~> 1.0'
+  gem.add_dependency 'opener-daemons', '~> 2.2'
+  gem.add_dependency 'opener-webservice', '~> 2.1'
+  gem.add_dependency 'opener-core', '~> 2.2'
+
+  gem.add_dependency 'nokogiri'
 
   gem.add_development_dependency 'rake'
 end

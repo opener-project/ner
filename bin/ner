@@ -2,6 +2,6 @@
 
 require_relative '../lib/opener/ner'
 
-cli = Opener::Ner::CLI.new(:args => ARGV)
+cli = Opener::Ner::CLI.new
 
-puts cli.run(STDIN.tty? ? nil : STDIN.read)
+cli.run

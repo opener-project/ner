@@ -1,7 +1,6 @@
-require 'optparse'
 require 'opener/ners/base'
 require 'nokogiri'
-require 'opener/core'
+require 'slop'
 
 require_relative 'ner/version'
 require_relative 'ner/cli'
@@ -39,6 +38,7 @@ module Opener
     #
     # @option options [Array] :args Collection of arbitrary arguments to pass
     #  to the underlying kernels.
+    #
     # @option options [String] :language The language to use.
     #
     def initialize(options = {})
@@ -53,20 +53,16 @@ module Opener
     # @return [Array]
     #
     def run(input)
-      begin
-        language = language_from_kaf(input) || DEFAULT_LANGUAGE
-        args     = options[:args].dup
+      language = language_from_kaf(input) || DEFAULT_LANGUAGE
+      args     = options[:args].dup
 
-        if language_constant_defined?(language)
-          kernel = language_constant(language).new(options)
-        else
-          kernel = Ners::Base.new(options)
-        end
-
-        return kernel.run(input)
-      rescue Exception => error
-        return Opener::Core::ErrorLayer.new(input, error.message, self.class).add
+      if language_constant_defined?(language)
+        kernel = language_constant(language).new(options)
+      else
+        kernel = Ners::Base.new(options)
       end
+
+      return kernel.run(input)
     end
 
     protected
