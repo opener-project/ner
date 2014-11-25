@@ -4,7 +4,7 @@ This repository contains the source code for the primary NER component of the
 OpeNER project. This component provides a CLI interface for the various kernels
 as well as providing a Sinatra based web service.
 
-### Confused by some terminology?
+## Confused by some terminology?
 
 This software is part of a larger collection of natural language processing
 tools known as "the OpeNER project". You can find more information about the
