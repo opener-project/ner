@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
 
   gem.executables = Dir.glob('bin/*').map { |file| File.basename(file) }
 
-  gem.add_dependency 'newrelic_rpm', '~> 3.0'
+  gem.add_dependency 'newrelic_rpm'
 
   gem.add_dependency 'opener-ner-base', ['~> 3.0']
   gem.add_dependency 'opener-daemons', '~> 2.2'
